@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>আল-মু'জাম | প্রিমিয়াম ইসলামিক ডিকশনারি</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700;800&family=Amiri:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-body: #f8fafc;
+            --bg-surface: #ffffff;
+            --bg-elevated: #f1f5f9;
+            --text-primary: #0f172a;
+            --text-secondary: #334155;
+            --text-muted: #64748b;
+            --primary: #2c5282;
+            --primary-dark: #1a365d;
+            --accent: #eab308;
+            --success: #10b981;
+            --border: #e2e8f0;
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            --gradient-hero: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        }
+
+        .dark {
+            --bg-body: #0f172a;
+            --bg-surface: #1e293b;
+            --bg-elevated: #0f172a;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border: #334155;
+        }
+
+        body { font-family: 'Inter', 'Noto Sans Bengali', sans-serif; background: var(--bg-body); color: var(--text-primary); transition: all 0.3s ease; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-body); }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+
+        .hero { background: var(--gradient-hero); padding: 35px 20px 60px; text-align: center; position: relative; }
+        .hero-icon { font-size: 52px; margin-bottom: 12px; animation: float 3s ease-in-out infinite; display: inline-block; }
+        @keyframes float { 0%,100%{ transform: translateY(0); } 50%{ transform: translateY(-8px); } }
+        .hero h1 { font-size: 2rem; font-weight: 800; color: white; }
+        .hero h1 span { font-family: 'Amiri', serif; margin: 0 6px; }
+        .hero p { color: rgba(255,255,255,0.9); margin-top: 8px; font-size: 0.9rem; }
+
+        .search-area { max-width: 900px; margin: -35px auto 0; padding: 0 20px; position: relative; z-index: 20; }
+        .search-card { background: var(--bg-surface); border-radius: 60px; padding: 8px; display: flex; gap: 12px; box-shadow: var(--shadow-xl); border: 1px solid var(--border); }
+        .search-input-wrapper { flex: 1; position: relative; display: flex; align-items: center; }
+        .search-input-wrapper i { position: absolute; left: 20px; color: var(--text-muted); }
+        #searchInput { width: 100%; padding: 16px 20px 16px 50px; border: none; background: transparent; font-size: 1rem; font-family: inherit; color: var(--text-primary); outline: none; }
+        .icon-btn { width: 52px; height: 52px; border: none; border-radius: 50%; background: var(--primary); color: white; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        .icon-btn:hover { transform: scale(1.05); background: var(--primary-dark); }
+
+        .suggestions-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-surface); border-radius: 20px; margin-top: 12px; box-shadow: var(--shadow-xl); border: 1px solid var(--border); max-height: 320px; overflow-y: auto; z-index: 100; display: none; }
+        .suggestion-item { padding: 14px 20px; cursor: pointer; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); transition: 0.2s; }
+        .suggestion-item:hover { background: var(--primary); color: white; padding-left: 28px; }
+
+        .filter-bar { max-width: 900px; margin: 20px auto 0; padding: 0 20px; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+        .filter-chip { padding: 10px 24px; border-radius: 40px; background: var(--bg-surface); border: 1px solid var(--border); cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s; font-weight: 500; }
+        .filter-chip.active { background: var(--primary); color: white; border-color: var(--primary); transform: translateY(-2px); }
+
+        .stats-container { max-width: 900px; margin: 20px auto 0; padding: 14px 24px; background: var(--bg-surface); border-radius: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border: 1px solid var(--border); }
+        .stats-group { display: flex; gap: 28px; }
+        .stat-item { display: flex; align-items: baseline; gap: 8px; }
+        .stat-value { font-size: 1.3rem; font-weight: 700; color: var(--primary); }
+        .stat-label { font-size: 0.8rem; color: var(--text-muted); }
+
+        .results-area { max-width: 900px; margin: 25px auto; padding: 0 20px 50px; }
+
+        .word-card { background: var(--bg-surface); border-radius: 28px; padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow-md); border: 1px solid var(--border); transition: 0.3s; animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .word-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid var(--border); }
+        .bengali-word { font-size: 1.8rem; font-weight: 800; }
+        .fav-btn { background: var(--bg-elevated); border: 2px solid var(--accent); border-radius: 50%; width: 48px; height: 48px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--accent); }
+        .fav-btn:hover { transform: scale(1.1); background: var(--accent); color: white; }
+
+        .pron-panel { background: var(--bg-elevated); border-radius: 20px; padding: 16px; margin-bottom: 20px; }
+        .pron-row { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+        .pron-row:last-child { border-bottom: none; }
+        .lang-badge { background: var(--primary); color: white; padding: 5px 14px; border-radius: 30px; font-size: 0.7rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; min-width: 95px; }
+        .word-text { flex: 1; font-size: 1.1rem; font-weight: 500; }
+        .arabic-with-harakat { flex: 1; font-family: 'Amiri', serif; font-size: 1.5rem; direction: rtl; line-height: 1.6; }
+        .pronunciation-text { font-family: monospace; font-size: 0.85rem; background: var(--bg-surface); padding: 5px 12px; border-radius: 20px; color: var(--success); font-weight: 500; }
+        .audio-btn { padding: 8px 18px; border-radius: 40px; border: 1px solid var(--border); background: var(--bg-surface); cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s; font-size: 0.8rem; font-weight: 500; }
+        .audio-btn:hover { background: var(--primary); color: white; transform: scale(1.02); }
+        .audio-btn.playing { background: var(--success); color: white; animation: pulse 0.8s infinite; }
+        @keyframes pulse { 0%,100%{ opacity: 1; } 50%{ opacity: 0.6; } }
+
+        .english-word, .arabic-word { margin: 12px 0; padding: 12px; background: var(--bg-elevated); border-radius: 16px; text-align: center; }
+        .english-word { font-size: 1.2rem; font-weight: 600; color: var(--primary); }
+        .arabic-word { font-family: 'Amiri', serif; font-size: 1.8rem; direction: rtl; color: var(--success); }
+
+        .action-buttons { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+        .action-btn { flex: 1; padding: 12px; border-radius: 16px; border: none; background: var(--bg-elevated); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; border: 1px solid var(--border); font-weight: 500; }
+        .action-btn:hover { background: var(--primary); color: white; transform: translateY(-2px); }
+
+        .empty-state { text-align: center; padding: 70px 20px; background: var(--bg-surface); border-radius: 30px; }
+        .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--bg-surface); padding: 12px 24px; border-radius: 60px; box-shadow: var(--shadow-xl); z-index: 1000; transition: 0.3s; display: flex; align-items: center; gap: 10px; border: 1px solid var(--border); }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+        .loading { text-align: center; padding: 60px; }
+        .spinner { width: 45px; height: 45px; border: 3px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 15px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        @media (max-width: 640px) {
+            .bengali-word { font-size: 1.4rem; }
+            .pron-row { flex-direction: column; align-items: flex-start; }
+            .fav-btn { width: 40px; height: 40px; font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="hero">
+    <div class="hero-icon"><i class="fas fa-book-quran"></i></div>
+    <h1><span>আল-মু'জাম</span> <span>المعجم</span></h1>
+    <p>বাংলা · বাংলা উচ্চারণ · ইংরেজি · ইংরেজি উচ্চারণ · আরবী (হরকত সহ) · আরবী উচ্চারণ</p>
+    <p style="font-size: 0.8rem; margin-top: 5px;">✅ সব ভাষার অডিও কাজ করে (Google Speech API)</p>
+</div>
+
+<div class="search-area">
+    <div class="search-card">
+        <div class="search-input-wrapper">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="বাংলা, ইংরেজি বা আরবী লিখুন..." autocomplete="off">
+        </div>
+        <div class="search-buttons">
+            <button class="icon-btn" id="themeToggle"><i class="fas fa-moon"></i></button>
+            <button class="icon-btn" id="clearBtn"><i class="fas fa-times"></i></button>
+        </div>
+    </div>
+    <div class="suggestions-dropdown" id="suggestionsPanel"></div>
+</div>
+
+<div class="filter-bar">
+    <div class="filter-chip active" data-filter="all"><i class="fas fa-list"></i> সব শব্দ</div>
+    <div class="filter-chip" data-filter="favorites"><i class="fas fa-heart"></i> প্রিয় তালিকা</div>
+</div>
+
+<div class="stats-container">
+    <div class="stats-group">
+        <div class="stat-item"><span class="stat-value" id="resultCount">0</span><span class="stat-label">টি ফলাফল</span></div>
+        <div class="stat-item"><span class="stat-value" id="favCount">0</span><span class="stat-label">টি প্রিয়</span></div>
+        <div class="stat-item"><span class="stat-value" id="totalCount">0</span><span class="stat-label">মোট শব্দ</span></div>
+    </div>
+    <div class="stats-info"><i class="fas fa-headphones"></i> 🔊 অডিও বাটনে ক্লিক করুন - সব ভাষায় কাজ করবে</div>
+</div>
+
+<div class="results-area" id="resultsContainer"><div class="loading"><div class="spinner"></div><p>ডাটাবেজ লোড হচ্ছে...</p></div></div>
+<div class="toast" id="toastMsg"><i class="fas fa-check-circle"></i> <span id="toastText"></span></div>
+
+<script>
+    // ==================== ব্যাকআপ ডাটাবেজ (যদি JSON লোড না হয় তাহলে এই ডাটা ব্যবহার হবে) ====================
+    const BACKUP_DICTIONARY = [
+        {"bn":"আল্লাহ","bnPron":"আল্লাহ","en":"Allah","enPron":"আল্লাহ","ar":"ٱللَّٰهُ","arPron":"আল্লাহু"},
+        {"bn":"রহমান","bnPron":"রহমান","en":"Most Merciful","enPron":"মোস্ট মার্সিফুল","ar":"ٱلرَّحْمَـٰنُ","arPron":"আর-রাহমানু"},
+        {"bn":"রহিম","bnPron":"রহিম","en":"Most Compassionate","enPron":"মোস্ট কম্প্যাশনেট","ar":"ٱلرَّحِيمُ","arPron":"আর-রাহীমু"},
+        {"bn":"ইলাহ","bnPron":"ইলাহ","en":"God","enPron":"গড","ar":"إِلَـٰهٌ","arPron":"ইলাহুন"},
+        {"bn":"মানুষ","bnPron":"মানুষ","en":"Human","enPron":"হিউম্যান","ar":"إِنْسَانٌ","arPron":"ইনসানুন"},
+        {"bn":"বিশ্বাস","bnPron":"বিশ্বাস","en":"Faith","enPron":"ফেইথ","ar":"إِيمَانٌ","arPron":"ঈমানুন"},
+        {"bn":"নবী","bnPron":"নবী","en":"Prophet","enPron":"প্রফেট","ar":"نَبِيٌّ","arPron":"নাবিয়্যুন"},
+        {"bn":"কিতাব","bnPron":"কিতাব","en":"Book","enPron":"বুক","ar":"كِتَابٌ","arPron":"কিতাবুন"},
+        {"bn":"জ্ঞান","bnPron":"জ্ঞান","en":"Knowledge","enPron":"নলেজ","ar":"عِلْمٌ","arPron":"ইলমুন"},
+        {"bn":"দুনিয়া","bnPron":"দুনিয়া","en":"World","enPron":"ওয়ার্ল্ড","ar":"دُنْيَا","arPron":"দুনিয়া"},
+        {"bn":"আখিরাত","bnPron":"আখিরাত","en":"Hereafter","enPron":"হিয়ারআফটার","ar":"آخِرَةٌ","arPron":"আখিরাতুন"},
+        {"bn":"নামাজ","bnPron":"নামাজ","en":"Prayer","enPron":"প্রেয়ার","ar":"صَلَاةٌ","arPron":"সালাতুন"},
+        {"bn":"রোজা","bnPron":"রোজা","en":"Fasting","enPron":"ফাস্টিং","ar":"صَوْمٌ","arPron":"সাওমুন"},
+        {"bn":"যাকাত","bnPron":"যাকাত","en":"Charity","enPron":"চ্যারিটি","ar":"زَكَاةٌ","arPron":"যাকাতুন"},
+        {"bn":"হজ","bnPron":"হজ","en":"Pilgrimage","enPron":"পিলগ্রিমেজ","ar":"حَجٌّ","arPron":"হাজ্জুন"},
+        {"bn":"সত্য","bnPron":"সত্য","en":"Truth","enPron":"ট্রুথ","ar":"حَقٌّ","arPron":"হক্কুন"},
+        {"bn":"মিথ্যা","bnPron":"মিথ্যা","en":"Falsehood","enPron":"ফলসহুড","ar":"بَاطِلٌ","arPron":"বাতিলুন"},
+        {"bn":"আলো","bnPron":"আলো","en":"Light","enPron":"লাইট","ar":"نُورٌ","arPron":"নূরুন"},
+        {"bn":"অন্ধকার","bnPron":"অন্ধকার","en":"Darkness","enPron":"ডার্কনেস","ar":"ظُلْمَةٌ","arPron":"যুলমাতুন"},
+        {"bn":"জীবন","bnPron":"জীবন","en":"Life","enPron":"লাইফ","ar":"حَيَاةٌ","arPron":"হায়াতুন"},
+        {"bn":"মৃত্যু","bnPron":"মৃত্যু","en":"Death","enPron":"ডেথ","ar":"مَوْتٌ","arPron":"মাওতুন"},
+        {"bn":"সময়","bnPron":"সময়","en":"Time","enPron":"টাইম","ar":"وَقْتٌ","arPron":"ওয়াকতুন"},
+        {"bn":"পথ","bnPron":"পথ","en":"Path","enPron":"পাথ","ar":"طَرِيقٌ","arPron":"তারীকুন"},
+        {"bn":"জান্নাত","bnPron":"জান্নাত","en":"Paradise","enPron":"প্যারাডাইস","ar":"جَنَّةٌ","arPron":"জান্নাতুন"},
+        {"bn":"জাহান্নাম","bnPron":"জাহান্নাম","en":"Hell","enPron":"হেল","ar":"جَهَنَّمُ","arPron":"জাহান্নামু"},
+        {"bn":"শান্তি","bnPron":"শান্তি","en":"Peace","enPron":"পীস","ar":"سَلَامٌ","arPron":"সালামুন"},
+        {"bn":"ধৈর্য","bnPron":"ধৈর্য","en":"Patience","enPron":"পেশেন্স","ar":"صَبْرٌ","arPron":"সাবরুন"},
+        {"bn":"কৃতজ্ঞতা","bnPron":"কৃতজ্ঞতা","en":"Gratitude","enPron":"গ্রাটিটিউড","ar":"شُكْرٌ","arPron":"শুকরুন"},
+        {"bn":"ক্ষমা","bnPron":"ক্ষমা","en":"Forgiveness","enPron":"ফরগিভনেস","ar":"مَغْفِرَةٌ","arPron":"মাগফিরাতুন"},
+        {"bn":"সহানুভূতি","bnPron":"সহানুভূতি","en":"Compassion","enPron":"কম্প্যাশন","ar":"رَحْمَةٌ","arPron":"রাহমাতুন"},
+        {"bn":"তওবা","bnPron":"তওবা","en":"Repentance","enPron":"রিপেন্ট্যান্স","ar":"تَوْبَةٌ","arPron":"তাওবাতুন"},
+        {"bn":"ইবাদত","bnPron":"ইবাদত","en":"Worship","enPron":"ওরশিপ","ar":"عِبَادَةٌ","arPron":"ইবাদাতুন"},
+        {"bn":"মসজিদ","bnPron":"মসজিদ","en":"Mosque","enPron":"মস্ক","ar":"مَسْجِدٌ","arPron":"মাসজিদুন"},
+        {"bn":"উম্মাহ","bnPron":"উম্মাহ","en":"Community","enPron":"কমিউনিটি","ar":"أُمَّةٌ","arPron":"উম্মাতুন"},
+        {"bn":"ফেরেশতা","bnPron":"ফেরেশতা","en":"Angel","enPron":"এঞ্জেল","ar":"مَلَكٌ","arPron":"মালাকুন"},
+        {"bn":"শয়তান","bnPron":"শয়তান","en":"Satan","enPron":"স্যাটান","ar":"شَيْطَانٌ","arPron":"শাইত্বানুন"},
+        {"bn":"কুরআন","bnPron":"কুরআন","en":"Quran","enPron":"কুরআন","ar":"ٱلْقُرْآنُ","arPron":"আল-কুরআনু"},
+        {"bn":"হাদিস","bnPron":"হাদিস","en":"Hadith","enPron":"হাদিস","ar":"حَدِيثٌ","arPron":"হাদীসুন"},
+        {"bn":"সুন্নাহ","bnPron":"সুন্নাহ","en":"Sunnah","enPron":"সুন্নাহ","ar":"سُنَّةٌ","arPron":"সুন্নাতুন"},
+        {"bn":"ইহসান","bnPron":"ইহসান","en":"Excellence","enPron":"এক্সেলেন্স","ar":"إِحْسَانٌ","arPron":"ইহসানুন"},
+        {"bn":"তাকওয়া","bnPron":"তাকওয়া","en":"Piety","enPron":"পাইয়েটি","ar":"تَقْوَىٰ","arPron":"তাকওয়া"},
+        {"bn":"বারাকাহ","bnPron":"বারাকাহ","en":"Blessing","enPron":"ব্লেসিং","ar":"بَرَكَةٌ","arPron":"বারাকাতুন"},
+        {"bn":"রিজিক","bnPron":"রিজিক","en":"Sustenance","enPron":"সাস্টেন্যান্স","ar":"رِزْقٌ","arPron":"রিজকুন"},
+        {"bn":"সালাম","bnPron":"সালাম","en":"Peace","enPron":"পীস","ar":"سَلَامٌ","arPron":"সালামুন"},
+        {"bn":"দোয়া","bnPron":"দোয়া","en":"Supplication","enPron":"সাপ্লিকেশন","ar":"دُعَاءٌ","arPron":"দু'আউন"},
+        {"bn":"হেদায়াত","bnPron":"হেদায়াত","en":"Guidance","enPron":"গাইডেন্স","ar":"هِدَايَةٌ","arPron":"হিদায়াতুন"},
+        {"bn":"জিহাদ","bnPron":"জিহাদ","en":"Striving","enPron":"স্ট্রাইভিং","ar":"جِهَادٌ","arPron":"জিহাদুন"},
+        {"bn":"সাবর","bnPron":"সাবর","en":"Patience","enPron":"পেশেন্স","ar":"صَبْرٌ","arPron":"সাবরুন"},
+        {"bn":"শুকর","bnPron":"শুকর","en":"Thanksgiving","enPron":"থ্যাংক্সগিভিং","ar":"شُكْرٌ","arPron":"শুকরুন"},
+        {"bn":"বরকত","bnPron":"বরকত","en":"Divine Blessing","enPron":"ডিভাইন ব্লেসিং","ar":"بَرَكَةٌ","arPron":"বারাকাতুন"}
+    ];
+
+    // ==================== গ্লোবাল ভেরিয়েবল ====================
+    let DICTIONARY = [];
+    let favorites = [];
+    let currentFilter = 'all';
+    let searchTimeout;
+    let currentAudio = null;
+    let CURRENT_IP = '';
+    let jsonLoadAttempted = false;
+
+    // ==================== IP ঠিকানা সংগ্রহ ====================
+    async function getClientIP() {
+        try {
+            const response = await fetch('https://api.ipify.org?format=json');
+            const data = await response.json();
+            return data.ip;
+        } catch (error) {
+            console.warn('IP fetch failed, using fallback');
+            return 'local_user_' + Date.now();
+        }
+    }
+    
+    function getFavStorageKey(ip) {
+        return `al_mujam_favs_${ip}`;
+    }
+    
+    function loadFavorites(ip) {
+        try {
+            const key = getFavStorageKey(ip);
+            const saved = localStorage.getItem(key);
+            if (saved) {
+                favorites = JSON.parse(saved);
+            } else {
+                favorites = [];
+            }
+        } catch(e) {
+            favorites = [];
+        }
+        updateFavCountDisplay();
+    }
+    
+    function saveFavorites() {
+        if (CURRENT_IP) {
+            const key = getFavStorageKey(CURRENT_IP);
+            localStorage.setItem(key, JSON.stringify(favorites));
+        }
+        updateFavCountDisplay();
+    }
+    
+    function updateFavCountDisplay() {
+        document.getElementById('favCount').innerText = favorites.length;
+    }
+    
+    // ==================== JSON ডাটাবেজ লোড করা (সমস্যা সমাধান সহ) ====================
+    async function loadDictionary() {
+        const container = document.getElementById('resultsContainer');
+        
+        try {
+            // JSON ফাইল লোড করার চেষ্টা
+            const response = await fetch('data_all.json', {
+                cache: 'no-store', // ক্যাশিং সমস্যা এড়াতে
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ফাইল পাওয়া যায়নি`);
+            }
+            
+            const data = await response.json();
+            
+            if (data && data.dictionary && Array.isArray(data.dictionary) && data.dictionary.length > 0) {
+                DICTIONARY = data.dictionary;
+                jsonLoadAttempted = true;
+                document.getElementById('totalCount').innerText = DICTIONARY.length;
+                renderResults();
+                showToast('✅ data_all.json থেকে ডাটাবেজ লোড সফল!', false);
+                return;
+            } else {
+                throw new Error('JSON ফরম্যাট সঠিক নয়');
+            }
+            
+        } catch (error) {
+            console.warn('JSON লোড ব্যর্থ:', error);
+            // ব্যাকআপ ডাটা ব্যবহার করা হবে
+            DICTIONARY = BACKUP_DICTIONARY;
+            document.getElementById('totalCount').innerText = DICTIONARY.length;
+            renderResults();
+            showToast('⚠️ data_all.json পাওয়া যায়নি, ব্যাকআপ ডাটাবেজ ব্যবহার হচ্ছে', true);
+        }
+    }
+    
+    function showToast(msg, isError = false) {
+        const toast = document.getElementById('toastMsg');
+        const toastText = document.getElementById('toastText');
+        const icon = toast.querySelector('i');
+        toastText.innerText = msg;
+        icon.className = isError ? 'fas fa-exclamation-triangle' : 'fas fa-check-circle';
+        icon.style.color = isError ? '#ef4444' : '#10b981';
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+    
+    // ==================== অডিও ফাংশন ====================
+    function playAudio(text, language, buttonElement = null) {
+        if (currentAudio) {
+            currentAudio.pause();
+            currentAudio = null;
+        }
+        
+        if (buttonElement) {
+            document.querySelectorAll('.audio-btn').forEach(btn => {
+                btn.classList.remove('playing');
+                const orig = btn.getAttribute('data-original');
+                if (orig) btn.innerHTML = orig;
+            });
+            buttonElement.classList.add('playing');
+            const originalHtml = buttonElement.innerHTML;
+            buttonElement.setAttribute('data-original', originalHtml);
+            buttonElement.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> লোড হচ্ছে...';
+        }
+        
+        let langCode = '';
+        if (language === 'bn') langCode = 'bn';
+        else if (language === 'ar') langCode = 'ar';
+        else langCode = 'en';
+        
+        const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text)}&tl=${langCode}&client=tw-ob`;
+        const audio = new Audio(audioUrl);
+        currentAudio = audio;
+        
+        audio.oncanplaythrough = () => {
+            if (buttonElement) buttonElement.innerHTML = '<i class="fas fa-volume-up"></i> বাজছে...';
+        };
+        
+        audio.onended = () => {
+            if (buttonElement) {
+                buttonElement.classList.remove('playing');
+                const original = buttonElement.getAttribute('data-original');
+                if (original) buttonElement.innerHTML = original;
+            }
+            currentAudio = null;
+        };
+        
+        audio.onerror = () => {
+            if (buttonElement) {
+                buttonElement.classList.remove('playing');
+                const original = buttonElement.getAttribute('data-original');
+                if (original) buttonElement.innerHTML = original;
+            }
+            showToast(`⚠️ অডিও লোড হয়নি`, true);
+            currentAudio = null;
+        };
+        
+        audio.play().catch(err => {
+            console.error('Audio error:', err);
+            if (buttonElement) {
+                buttonElement.classList.remove('playing');
+                const original = buttonElement.getAttribute('data-original');
+                if (original) buttonElement.innerHTML = original;
+            }
+            showToast(`🔇 অডিও চালানো যায়নি`, true);
+            currentAudio = null;
+        });
+    }
+    
+    // ==================== প্রিয় ফাংশন ====================
+    function toggleFavorite(bnWord) {
+        if (favorites.includes(bnWord)) {
+            favorites = favorites.filter(f => f !== bnWord);
+            showToast(`⭐ "${bnWord}" প্রিয় থেকে সরানো হয়েছে`);
+        } else {
+            favorites.push(bnWord);
+            showToast(`❤️ "${bnWord}" প্রিয় তালিকায় যুক্ত হয়েছে`);
+        }
+        saveFavorites();
+        renderResults();
+    }
+    
+    // ==================== ফিল্টার ও সার্চ ====================
+    function getFilteredData() {
+        if (DICTIONARY.length === 0) return [];
+        
+        let filtered = [...DICTIONARY];
+        const term = document.getElementById('searchInput').value.trim().toLowerCase();
+        
+        if (term) {
+            filtered = filtered.filter(item =>
+                item.bn.toLowerCase().includes(term) ||
+                item.bnPron.toLowerCase().includes(term) ||
+                item.en.toLowerCase().includes(term) ||
+                item.enPron.toLowerCase().includes(term) ||
+                item.ar.includes(term) ||
+                item.arPron.toLowerCase().includes(term)
+            );
+        }
+        
+        if (currentFilter === 'favorites') {
+            filtered = filtered.filter(item => favorites.includes(item.bn));
+        }
+        
+        return filtered;
+    }
+    
+    function updateStats(count) {
+        document.getElementById('resultCount').innerText = count;
+        document.getElementById('favCount').innerText = favorites.length;
+    }
+    
+    function escapeHtml(str) { 
+        if (!str) return ''; 
+        return str.replace(/[&<>]/g, m => m==='&'?'&amp;':m==='<'?'&lt;':'&gt;'); 
+    }
+    
+    function copyToClipboard(text) { 
+        navigator.clipboard.writeText(text).then(() => showToast('📋 কপি হয়েছে!')).catch(() => showToast('কপি ব্যর্থ', true)); 
+    }
+    
+    // ==================== রেন্ডার ====================
+    function renderResults() {
+        if (DICTIONARY.length === 0) {
+            const container = document.getElementById('resultsContainer');
+            container.innerHTML = `<div class="loading"><div class="spinner"></div><p>ডাটাবেজ লোড হচ্ছে...</p></div>`;
+            return;
+        }
+        
+        const filtered = getFilteredData();
+        const container = document.getElementById('resultsContainer');
+        updateStats(filtered.length);
+        
+        if (filtered.length === 0) {
+            container.innerHTML = `<div class="empty-state"><i class="fas fa-search"></i><h3>কোনো ফলাফল পাওয়া যায়নি</h3><p>অন্য শব্দ দিয়ে চেষ্টা করুন</p></div>`;
+            return;
+        }
+        
+        container.innerHTML = filtered.map(item => {
+            const isFav = favorites.includes(item.bn);
+            const safeBn = escapeHtml(item.bn).replace(/'/g, "\\'");
+            const safeEn = escapeHtml(item.en).replace(/'/g, "\\'");
+            const safeAr = escapeHtml(item.ar).replace(/'/g, "\\'");
+            return `
+            <div class="word-card">
+                <div class="card-header">
+                    <span class="bengali-word">${escapeHtml(item.bn)}</span>
+                    <button class="fav-btn" onclick="toggleFavorite('${safeBn}')">
+                        <i class="fas ${isFav ? 'fa-star' : 'fa-star-o'}"></i>
+                    </button>
+                </div>
+                
+                <div class="pron-panel">
+                    <div class="pron-row">
+                        <span class="lang-badge"><i class="fas fa-microphone"></i> বাংলা</span>
+                        <span class="word-text">${escapeHtml(item.bn)}</span>
+                        <span class="pronunciation-text">[${escapeHtml(item.bnPron)}]</span>
+                        <button class="audio-btn" onclick="playAudio('${safeBn}', 'bn', this)"><i class="fas fa-volume-up"></i> শুনুন</button>
+                    </div>
+                    
+                    <div class="pron-row">
+                        <span class="lang-badge"><i class="fas fa-language"></i> ইংরেজি</span>
+                        <span class="word-text">${escapeHtml(item.en)}</span>
+                        <span class="pronunciation-text">[${escapeHtml(item.enPron)}]</span>
+                        <button class="audio-btn" onclick="playAudio('${safeEn}', 'en', this)"><i class="fas fa-volume-up"></i> শুনুন</button>
+                    </div>
+                    
+                    <div class="pron-row">
+                        <span class="lang-badge"><i class="fas fa-mosque"></i> আরবী</span>
+                        <span class="arabic-with-harakat">${escapeHtml(item.ar)}</span>
+                        <span class="pronunciation-text">[${escapeHtml(item.arPron)}]</span>
+                        <button class="audio-btn" onclick="playAudio('${safeAr}', 'ar', this)"><i class="fas fa-volume-up"></i> শুনুন</button>
+                    </div>
+                </div>
+                
+                <div class="english-word"><i class="fas fa-globe"></i> ${escapeHtml(item.en)}</div>
+                <div class="arabic-word">${escapeHtml(item.ar)}</div>
+                
+                <div class="action-buttons">
+                    <button class="action-btn" onclick="playAudio('${safeBn}', 'bn')"><i class="fas fa-headphones"></i> বাংলা অডিও</button>
+                    <button class="action-btn" onclick="copyToClipboard('${escapeHtml(item.bn)} | ${escapeHtml(item.en)} | ${escapeHtml(item.ar)}')"><i class="fas fa-copy"></i> কপি</button>
+                </div>
+            </div>`;
+        }).join('');
+    }
+    
+    function showSuggestions() {
+        if (DICTIONARY.length === 0) return;
+        const term = document.getElementById('searchInput').value.trim().toLowerCase();
+        const panel = document.getElementById('suggestionsPanel');
+        if (!term) { panel.style.display = 'none'; return; }
+        const matches = DICTIONARY.filter(item => item.bn.toLowerCase().includes(term) || item.en.toLowerCase().includes(term)).slice(0, 8);
+        if (!matches.length) { panel.style.display = 'none'; return; }
+        panel.innerHTML = matches.map(item => `<div class="suggestion-item" onclick="selectSuggestion('${escapeHtml(item.bn).replace(/'/g, "\\'")}')"><span><strong>${escapeHtml(item.bn)}</strong> - ${escapeHtml(item.en)}</span><i class="fas fa-arrow-right"></i></div>`).join('');
+        panel.style.display = 'block';
+    }
+    
+    function selectSuggestion(word) { 
+        document.getElementById('searchInput').value = word; 
+        document.getElementById('suggestionsPanel').style.display = 'none'; 
+        renderResults(); 
+    }
+    
+    function clearSearch() { 
+        document.getElementById('searchInput').value = ''; 
+        renderResults(); 
+        document.getElementById('suggestionsPanel').style.display = 'none'; 
+        showToast('🔍 অনুসন্ধান মুছে ফেলা হয়েছে'); 
+    }
+    
+    function toggleTheme() {
+        document.body.classList.toggle('dark');
+        const isDark = document.body.classList.contains('dark');
+        localStorage.setItem('al_mujam_theme', isDark);
+        document.querySelector('#themeToggle i').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+    }
+    
+    // ==================== ইনিশিয়ালাইজ ====================
+    async function init() {
+        const savedTheme = localStorage.getItem('al_mujam_theme');
+        if (savedTheme === 'true') { 
+            document.body.classList.add('dark'); 
+            document.querySelector('#themeToggle i').className = 'fas fa-sun'; 
+        }
+        
+        // IP ঠিকানা সংগ্রহ
+        CURRENT_IP = await getClientIP();
+        loadFavorites(CURRENT_IP);
+        
+        // ডাটাবেজ লোড করুন (ব্যাকআপ সহ)
+        await loadDictionary();
+        
+        // ইভেন্ট লিসেনার
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', () => { 
+            clearTimeout(searchTimeout); 
+            searchTimeout = setTimeout(() => { 
+                renderResults(); 
+                showSuggestions(); 
+            }, 250); 
+        });
+        searchInput.addEventListener('focus', showSuggestions);
+        document.addEventListener('click', (e) => { 
+            if (!e.target.closest('.search-area')) 
+                document.getElementById('suggestionsPanel').style.display = 'none'; 
+        });
+        document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+        document.getElementById('clearBtn').addEventListener('click', clearSearch);
+        
+        document.querySelectorAll('.filter-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                currentFilter = chip.getAttribute('data-filter');
+                renderResults();
+            });
+        });
+        
+        document.addEventListener('keydown', (e) => { 
+            if (e.ctrlKey && e.key === 'd') { 
+                e.preventDefault(); 
+                toggleTheme(); 
+            } 
+            if (e.key === 'Escape') clearSearch(); 
+            if (e.ctrlKey && e.key === 'f') { 
+                e.preventDefault(); 
+                searchInput.focus(); 
+            } 
+        });
+        
+        setTimeout(() => {
+            showToast("🔊 অডিও প্রস্তুত! বাংলা, ইংরেজি ও আরবি শুনতে পারবেন");
+        }, 1500);
+    }
+    
+    window.toggleFavorite = toggleFavorite;
+    window.playAudio = playAudio;
+    window.selectSuggestion = selectSuggestion;
+    window.copyToClipboard = copyToClipboard;
+    
+    init();
+</script>
+</body>
+</html>
